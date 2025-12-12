@@ -1,4 +1,8 @@
 # LLM Evaluation Pipeline
+
+Kindly refer to output section of the repository for terminal outputs.
+
+
 ## Local Setup Instructions
 1. Install the following libraries
 
