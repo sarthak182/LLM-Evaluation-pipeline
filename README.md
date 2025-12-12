@@ -1,8 +1,12 @@
 # LLM Evaluation Pipeline
 ## Local Setup Instructions
-Install the following libraries
+1. Install the following libraries
 
 `pip install json tabulate sentence-transformers`
+
+2. Run the main.py file in the terminal using
+  `python main.py`
+
 
 ## Architecture of the Evaluation Pipeline
 Git repo content:
