@@ -36,10 +36,11 @@ Git repo content:
 3. Hallucination Detection
 
     Breaks the response into sentences and checks each one against context vectors.
+
     Sentences with low support scores are flagged as hallucinations.
     Memoization is used to speed this up.
 
-4. Latency & Cost
+5. Latency & Cost
 
     Tracks:
 
@@ -49,7 +50,7 @@ Git repo content:
 
     - Estimated compute cost
 
-5. Output
+6. Output
 
     Produces a compact JSON report containing:
 
