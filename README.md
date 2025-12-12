@@ -19,9 +19,9 @@ Git repo content:
 
     Takes two JSONs:
 
-- chat JSON → conversation history
+    - chat JSON → conversation history
 
-- context JSON → vector DB results used for generating the answer
+    - context JSON → vector DB results used for generating the answer
 
     Extracts only the latest user query and latest AI response for scoring.
 
@@ -29,9 +29,9 @@ Git repo content:
 
     Uses all-mpnet-base-v2 embeddings to:
 
-    Measure how relevant the answer is to the query
+    - Measure how relevant the answer is to the query
 
-    Check how much of the provided context is covered
+    - Check how much of the provided context is covered
 
 3. Hallucination Detection
 
@@ -41,27 +41,27 @@ Git repo content:
 
 4. Latency & Cost
 
-Tracks:
+    Tracks:
 
-- Execution time
+    - Execution time
 
-- Token counts
+    - Token counts
 
-- Estimated compute cost
+    - Estimated compute cost
 
 5. Output
 
-Produces a compact JSON report containing:
+    Produces a compact JSON report containing:
 
-- Relevance
+    - Relevance
 
-- Completeness
+    - Completeness
 
-- Support ratio
+    - Support ratio
 
-- Hallucinated sentences
+    - Hallucinated sentences
 
-- Latency & cost metrics
+    - Latency & cost metrics
 
 ## Why This Solution
 
