@@ -1,3 +1,9 @@
+
+## Local Setup Instructions
+Ensure the following libraries are installed:
+
+~ pip install json tabulate sentence-transformers
+
 ## Architecture of the Evaluation Pipeline
 
 Input:                           Accepts two JSONs — chat conversation and context vectors.
