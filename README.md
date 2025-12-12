@@ -1,6 +1,7 @@
 # LLM Evaluation Pipeline
+Objective: The LLM Evaluation Pipeline automatically analyzes AI responses in real time for relevance, completeness, hallucinations, latency, and cost. It takes a conversation JSON + retrieved context JSON and outputs a structured evaluation report.
 
-Kindly refer to output section of the repository for terminal outputs.
+NOTE: Kindly refer to output section of the repository for terminal outputs.
 
 
 ## Local Setup Instructions
