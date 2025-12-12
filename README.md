@@ -1,97 +1,53 @@
-LLM Evaluation Pipeline
-Overview
+# Architecture of the Evaluation Pipeline
 
-This repository contains a Python-based evaluation pipeline to automatically assess the reliability of LLM (Large Language Model) responses. The pipeline evaluates AI answers to user queries against the following parameters in real-time:
+The evaluation pipeline is designed to automatically assess the reliability of AI responses in real-time using two JSON inputs: a chat conversation and context vectors. The architecture can be summarized in the following steps:
 
-Response Relevance & Completeness
+Input
 
-Hallucination / Factual Accuracy
+chat-conversation.json: Contains all conversation turns between the user and the AI.
 
-Latency & Costs
+context-vectors.json: Contains source text, vector IDs, and other metadata used to verify the AI’s response.
 
-The evaluation uses two inputs:
+Extract Latest Interaction
 
-Chat JSON – contains the conversation history between the user and the AI.
+The pipeline identifies the latest AI response and the corresponding user query from the conversation JSON.
 
-Context JSON – contains context vectors from a knowledge base, which are used to verify factual accuracy of the AI response.
+This ensures the evaluation focuses on the most recent AI answer, which is the relevant output to verify.
 
-Local Setup Instructions
+Relevance & Completeness Scoring
 
-Clone the repository
+Compares the AI response with the user query using embedding similarity.
 
-git clone <your_repo_url>
-cd <repo_folder>
+Computes coverage by checking which portions of the AI response are supported by the source context.
 
+Calculates completeness using token overlap between the response and aggregated context keywords.
 
-Create and activate a virtual environment (optional but recommended)
+Outputs a combined score reflecting both relevance and completeness.
 
-python -m venv venv
-source venv/bin/activate       # Linux/Mac
-venv\Scripts\activate          # Windows
+Hallucination / Factual Accuracy Detection
 
+Splits the AI response into sentences and computes a support score for each sentence against all context sources.
 
-Install dependencies
+Sentences below a defined threshold are labeled unsupported, identifying potential hallucinations.
 
-pip install -r requirements.txt
+Returns a detailed report of unsupported sentences and their best matching source.
 
+Latency & Cost Estimation
 
-Run the evaluation pipeline
+Computes token usage and estimated costs for generating the AI response.
 
-python working.py
+Measures execution time for analysis to track pipeline performance.
 
+Report Generation
 
-By default, the pipeline evaluates the AI response using the sample JSONs in sample_data/.
+Consolidates relevance, completeness, hallucination analysis, and latency/cost metrics into a structured JSON report.
 
-For individual testing, you can modify working.py in the Individual Testing Block to input custom queries, context, and AI responses.
+Includes metadata such as generation timestamp and sources used.
 
-Architecture of the Pipeline
+Design Notes:
 
-Data Loading – JSON files containing chat and context vectors are loaded.
+Modular design separates evaluation functions (relevance_and_completeness, detect_hallucinations_optimized, etc.) for easy maintenance.
 
-Latest AI Response Extraction – Only the latest AI turn is evaluated. The last user message is used to compute relevance.
+Memoization and optimized similarity computations improve runtime efficiency.
 
-Relevance & Completeness – Compares the AI response to the user query and measures token coverage against source context.
-
-Hallucination Detection – Each sentence in the AI response is checked against all provided context sources. Memoization is applied to speed up repeated similarity computations.
-
-Latency & Cost Estimation – Tracks token usage and computes an estimated cost for generating the response.
-
-Report Generation – Generates a structured report including summary metrics, detailed evaluation, and metadata.
-
-Design Decisions
-
-Latest-turn evaluation: Since the AI response is intended for the last user query, evaluating only the latest turn is both logical and efficient.
-
-Context vector grounding: To verify factual accuracy, we rely on the pre-fetched context vectors, which are assumed to contain relevant information for that query.
-
-Optimizations:
-
-Memoization for repeated similarity computations.
-
-Efficient selection of best-supporting sources per sentence.
-
-Individual Testing: Optional testing block allows debugging with custom queries and responses without modifying the main pipeline.
-
-Scalability Considerations
-
-Memoization drastically reduces repeated computations across multiple responses using the same sources.
-
-Vector-based similarity checks can be parallelized or batch-processed for large datasets.
-
-Processing only the latest turn ensures minimal overhead per conversation, even when chat histories contain hundreds of messages.
-
-Token-based cost estimation allows real-time cost monitoring and budgeting when evaluating millions of conversations.
-
-JSON structure separates chat and context data, enabling distributed or incremental evaluation without reprocessing the entire dataset.
-
-With these measures, the pipeline can efficiently scale to millions of daily conversations with minimal latency and cost.
-
-Folder Structure
-.
-├── functions.py          # Core evaluation functions
-├── working.py            # Main script to run evaluations
-├── sample_data/          # Sample chat and context JSONs
-│   ├── sample-chat-conversation-01.json
-│   └── sample_context_vectors-01.json
-├── requirements.txt      # Python dependencies
-└── README.md             # This file
+The pipeline is flexible to accept new JSON inputs or additional context sources without modifying core logic.
