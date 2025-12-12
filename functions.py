@@ -8,7 +8,7 @@ from tabulate import tabulate
 # Initialize embedding model
 # model = SentenceTransformer('all-MiniLM-L6-v2') # Model too small
 model = SentenceTransformer('all-mpnet-base-v2')
-
+SIM_CACHE={}
 # -----------------------------
 # Configuration / thresholds
 # -----------------------------
@@ -45,6 +45,14 @@ def embedding_similarity(a: str, b: str) -> float:
     emb_a = model.encode(a, convert_to_tensor=True)
     emb_b = model.encode(b, convert_to_tensor=True)
     return util.cos_sim(emb_a, emb_b).item()  # cosine similarity between 0 and 1
+
+def cached_similarity(a, b):
+    key = (a, b)
+    if key in SIM_CACHE:
+        return SIM_CACHE[key]
+    sim = embedding_similarity(a, b)
+    SIM_CACHE[key] = sim
+    return sim
 
 # -----------------------------
 # Source extraction / merging
@@ -153,39 +161,11 @@ def compute_support_score(sentence: str, sources: List[Dict[str, Any]]) -> Tuple
     best = 0.0
     for i, s in enumerate(sources):
         text = s.get("text") or ""
-        sim = embedding_similarity(sentence, text)
+        sim = cached_similarity(sentence, text)
         sims[str(s.get("id") or i)] = sim
         if sim > best:
             best = sim
     return best, sims
-
-def detect_hallucinations(response: str, sources: List[Dict[str, Any]], threshold: float) -> Dict[str, Any]:
-    """Label sentences in response as supported / unsupported by the sources.
-    Returns {total_sentences, unsupported_count, unsupported_sentences:[...], details:[{sentence, best_score, best_source}]}
-    """
-    sentences = sentence_split(response)
-    details = []
-    unsupported = []
-    for sent in sentences:
-        best, sims = compute_support_score(sent, sources)
-        best_src = max(sources, key=lambda x: sims.get(str(x.get("id")) if x.get("id") is not None else "", 0.0), default=None) if sources else None
-        details.append({
-            "sentence": sent,
-            "best_score": best,
-            "best_source_id": best_src.get("id") if best_src else None,
-        })
-        if best < threshold:
-            unsupported.append(sent)
-    total = len(sentences)
-    unsupported_count = len(unsupported)
-    support_ratio = 1.0 - (unsupported_count / total) if total > 0 else 0.0
-    return {
-        "total_sentences": total,
-        "unsupported_count": unsupported_count,
-        "unsupported_sentences": unsupported,
-        "support_ratio": support_ratio,
-        "details": details
-    }
 
 def detect_hallucinations_optimized(response: str, sources: List[Dict[str, Any]], threshold: float) -> Dict[str, Any]:
     """Label sentences in response as supported / unsupported by the sources.
@@ -238,7 +218,7 @@ def relevance_and_completeness(user_message: str, response: str, sources: List[D
     - coverage: how much of the response is supported by sources (support_ratio)
     - combined score: weighted
     """
-    rel = embedding_similarity(user_message, response)
+    rel = cached_similarity(user_message, response)
     # Use hallucination detector to compute coverage
     halluc = detect_hallucinations_optimized(response, sources, MODEL_CONFIG["support_score_threshold"]) if sources else {"support_ratio": 0.0}
     coverage = halluc.get("support_ratio", 0.0)
