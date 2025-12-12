@@ -5,6 +5,13 @@ Ensure the following libraries are installed:
 ~ pip install json tabulate sentence-transformers
 
 ## Architecture of the Evaluation Pipeline
+Git repo content:
+1) Main.py: This is the main python file to run. 
+  Enter the following command in the terminal:
+  python main.py
+2) Functions.py: This file contains all functions which will be used by main.py
+3) Dataset: Contains sample conversation and context json files used in main.py
+4) Images: Contains images of terminal outputs 
 
 Input:                           Accepts two JSONs — chat conversation and context vectors.
 
