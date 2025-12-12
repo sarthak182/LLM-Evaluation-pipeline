@@ -15,17 +15,74 @@ Git repo content:
 
 ## Pipeline Steps:
 
-- Input: Two JSONs – chat conversation and context vectors.
+1. Input Processing
 
-- Latest Interaction Extraction: Finds the latest user query and AI response.
+The pipeline takes two JSON files:
 
-- Relevance & Completeness: Scores response via embedding similarity and token coverage.
+- chat JSON → full conversation history
 
-- Hallucination Detection: Labels unsupported sentences using context vectors.
+- context JSON → vector-database results used by the LLM during generation
 
-- Latency & Cost: Tracks execution time, token usage, and estimated cost.
+2. Relevance & Completeness Scoring
 
-- Report Generation: Produces a structured JSON report with metrics and metadata.
+We use the all-mpnet-base-v2 sentence-transformer model:
+
+Compute embeddings for the user query, AI response, and context sources.
+
+Measure Relevance → semantic similarity between query and answer.
+
+Measure Completeness → how much of the context the answer actually uses.
+
+Both metrics use cosine similarity + token coverage for accuracy.
+
+3. Hallucination Detection
+
+The AI response is broken into sentences.
+For each sentence:
+
+Compare it with all context vectors.
+
+Identify its best support score.
+
+If the score is below a threshold → mark as hallucinated.
+
+Output:
+
+Unsupported sentences
+
+Support ratios
+
+Sentence-level details
+
+Memoization speeds this up significantly.
+
+4. Latency & Cost Tracking
+
+The script measures:
+
+Execution time
+
+Token usage (query, response, context)
+
+Estimated operational cost
+
+This allows the system to report not just quality, but efficiency.
+
+5. Final Report Generation
+
+All metrics are packaged into a clean JSON output containing:
+
+Relevance
+
+Completeness
+
+Support ratio
+
+Hallucinated sentences
+
+Latency & cost breakdown
+
+Metadata (timestamp, source count)
 
 ## Why This Solution
 
