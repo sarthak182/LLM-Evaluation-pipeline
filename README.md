@@ -15,74 +15,53 @@ Git repo content:
 
 ## Pipeline Steps:
 
-1. Input Processing
+1. Inputs
 
-The pipeline takes two JSON files:
+    Takes two JSONs:
 
-- chat JSON → full conversation history
+- chat JSON → conversation history
 
-- context JSON → vector-database results used by the LLM during generation
+- context JSON → vector DB results used for generating the answer
 
-2. Relevance & Completeness Scoring
+    Extracts only the latest user query and latest AI response for scoring.
 
-We use the all-mpnet-base-v2 sentence-transformer model:
+2. Relevance & Completeness
 
-Compute embeddings for the user query, AI response, and context sources.
+    Uses all-mpnet-base-v2 embeddings to:
 
-Measure Relevance → semantic similarity between query and answer.
+    Measure how relevant the answer is to the query
 
-Measure Completeness → how much of the context the answer actually uses.
-
-Both metrics use cosine similarity + token coverage for accuracy.
+    Check how much of the provided context is covered
 
 3. Hallucination Detection
 
-The AI response is broken into sentences.
-For each sentence:
+    Breaks the response into sentences and checks each one against context vectors.
+    Sentences with low support scores are flagged as hallucinations.
+    Memoization is used to speed this up.
 
-Compare it with all context vectors.
+4. Latency & Cost
 
-Identify its best support score.
+Tracks:
 
-If the score is below a threshold → mark as hallucinated.
+- Execution time
 
-Output:
+- Token counts
 
-Unsupported sentences
+- Estimated compute cost
 
-Support ratios
+5. Output
 
-Sentence-level details
+Produces a compact JSON report containing:
 
-Memoization speeds this up significantly.
+- Relevance
 
-4. Latency & Cost Tracking
+- Completeness
 
-The script measures:
+- Support ratio
 
-Execution time
+- Hallucinated sentences
 
-Token usage (query, response, context)
-
-Estimated operational cost
-
-This allows the system to report not just quality, but efficiency.
-
-5. Final Report Generation
-
-All metrics are packaged into a clean JSON output containing:
-
-Relevance
-
-Completeness
-
-Support ratio
-
-Hallucinated sentences
-
-Latency & cost breakdown
-
-Metadata (timestamp, source count)
+- Latency & cost metrics
 
 ## Why This Solution
 
