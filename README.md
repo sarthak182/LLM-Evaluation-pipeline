@@ -72,7 +72,7 @@ Git repo content:
 ## Why This Solution
 
 - Uses pre-trained “all-mpnet-base-v2” from Sentence-Transformers for relevance scoring.
-  The mentioned model gave better relevance results than smaller models (like Llama-Mini) and basic methods like cosine similarity.
+  The mentioned model gave better relevance results than smaller models (like Llama-Mini) and basic methods like cosine similarity,
   giving strong performance without being too heavy.
 
 - Caching & memoization significantly reduce computation time, enabling scalability.
