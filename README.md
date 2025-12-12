@@ -11,3 +11,25 @@ Hallucination Detection:         Labels unsupported sentences in the response us
 Latency & Cost:                  Measures execution time, token usage, and estimated cost.
 
 Report Generation:               Combines all metrics into a structured JSON report with metadata.
+
+## Why This Solution
+
+Focused Evaluation: Targets the latest user–AI interaction, which aligns with typical real-time evaluation needs.
+
+Context-Aware: Uses provided context vectors to validate factual accuracy and detect hallucinations.
+
+Modular & Maintainable: Separate functions for relevance, completeness, hallucination detection, and cost calculation make the pipeline easy to extend or modify.
+
+Optimized Performance: Memoization and precomputed similarity checks reduce redundant computations, ensuring faster evaluations even on larger datasets.
+
+## Scalability & Real-Time Performance
+
+Efficient Targeting: Only the latest user–AI turn is scored, avoiding unnecessary computations on older messages.
+
+Optimized Hallucination Checks: Memoization and precomputed embeddings reduce repeated similarity calculations.
+
+Token & Cost Awareness: The pipeline tracks tokens and estimates costs, helping manage compute resources efficiently.
+
+Parallelizable: Each conversation can be evaluated independently, making it easy to scale horizontally for millions of chats.
+
+Lightweight Design: Minimal dependencies and modular functions keep latency low, suitable for real-time evaluation scenarios.
