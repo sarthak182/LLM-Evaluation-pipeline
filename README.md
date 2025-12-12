@@ -1,6 +1,6 @@
 # LLM Evaluation Pipeline
 ## Local Setup Instructions
-Ensure the following libraries are installed:
+Install the following libraries
 
 `pip install json tabulate sentence-transformers`
 
@@ -13,36 +13,44 @@ Git repo content:
 3) Sample_data: Contains sample conversation and context json files used in main.py
 4) Output: Contains images of terminal outputs 
 
-Input:                           Accepts two JSONs — chat conversation and context vectors.
+## Pipeline Steps:
 
-Latest Interaction Extraction:   Identifies the latest user query and corresponding AI response.
+- Input: Two JSONs – chat conversation and context vectors.
 
-Relevance & Completeness:        Scores the AI response against the user query and context sources using embedding similarity and token coverage.
+- Latest Interaction Extraction: Finds the latest user query and AI response.
 
-Hallucination Detection:         Labels unsupported sentences in the response using context-based support scores.
+- Relevance & Completeness: Scores response via embedding similarity and token coverage.
 
-Latency & Cost:                  Measures execution time, token usage, and estimated cost.
+- Hallucination Detection: Labels unsupported sentences using context vectors.
 
-Report Generation:               Combines all metrics into a structured JSON report with metadata.
+- Latency & Cost: Tracks execution time, token usage, and estimated cost.
+
+- Report Generation: Produces a structured JSON report with metrics and metadata.
 
 ## Why This Solution
 
-Focused Evaluation: Targets the latest user–AI interaction, which aligns with typical real-time evaluation needs.
+- Uses pre-trained “all-mpnet-base-v2” from Sentence-Transformers for relevance scoring.
 
-Context-Aware: Uses provided context vectors to validate factual accuracy and detect hallucinations.
+- Caching & memoization significantly reduce computation time, enabling scalability.
 
-Modular & Maintainable: Separate functions for relevance, completeness, hallucination detection, and cost calculation make the pipeline easy to extend or modify.
+- Provides the following metrics:
 
-Optimized Performance: Memoization and precomputed similarity checks reduce redundant computations, ensuring faster evaluations even on larger datasets.
+  - Relevance: Alignment of response with the query topic.
+
+  - Completeness: Coverage of relevant context information.
+
+  - Support Ratio: Fraction of sentences supported by context.
+
+  - Hallucination Sentences: Sentences lacking context support.
 
 ## Scalability & Real-Time Performance
 
-Efficient Targeting: Only the latest user–AI turn is scored, avoiding unnecessary computations on older messages.
+- Efficient Targeting: Only evaluates the latest user–AI turn.
 
-Optimized Hallucination Checks: Memoization and precomputed embeddings reduce repeated similarity calculations.
+- Optimized Hallucination Checks: Memoization and precomputed embeddings reduce redundant calculations.
 
-Token & Cost Awareness: The pipeline tracks tokens and estimates costs, helping manage compute resources efficiently.
+- Token & Cost Awareness: Tracks tokens and estimates costs to manage compute efficiently.
 
-Parallelizable: Each conversation can be evaluated independently, making it easy to scale horizontally for millions of chats.
+- Parallelizable: Each conversation can be processed independently for horizontal scaling.
 
-Lightweight Design: Minimal dependencies and modular functions keep latency low, suitable for real-time evaluation scenarios.
+- Lightweight Design: Minimal dependencies and modular functions keep latency low for real-time use.
