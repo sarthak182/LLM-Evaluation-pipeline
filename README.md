@@ -45,12 +45,12 @@ Git repo content:
 
 ## Scalability & Real-Time Performance
 
-- Efficient Targeting: Only evaluates the latest user–AI turn.
+The script remains efficient even at millions of conversations per day because:
 
-- Optimized Hallucination Checks: Memoization and precomputed embeddings reduce redundant calculations.
+- Only the latest turn is evaluated — constant time per conversation.
 
-- Token & Cost Awareness: Tracks tokens and estimates costs to manage compute efficiently.
+- Memoization removes redundant embedding computations.
 
-- Parallelizable: Each conversation can be processed independently for horizontal scaling.
+- Embedding models, not LLMs, are used for scoring — reducing compute cost drastically.
 
-- Lightweight Design: Minimal dependencies and modular functions keep latency low for real-time use.
+- Lightweight design — minimal dependencies, no external API calls, very low latency.
