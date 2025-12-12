@@ -2,7 +2,7 @@
 ## Local Setup Instructions
 Ensure the following libraries are installed:
 
-~ pip install json tabulate sentence-transformers
+`pip install json tabulate sentence-transformers`
 
 ## Architecture of the Evaluation Pipeline
 Git repo content:
