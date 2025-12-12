@@ -2,7 +2,7 @@
 ## Local Setup Instructions
 1. Install the following libraries
 
-    `pip install json tabulate sentence-transformers`
+    `pip install tabulate sentence-transformers`
 
 2. Run the main.py file in the terminal using:
    
